@@ -2,19 +2,21 @@ import { Header } from "./components/header";
 import { ReadingList } from "./components/reading-list";
 import { ReadingView } from "./components/reading-view";
 import { ThemeProvider } from "./components/theme-provider";
-import { Button } from "./components/ui/button";
+import { SettingsProvider } from "./contexts/settings-context";
 import { readings } from "./mock/readings";
 
 export function App() {
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<div className="space-y-4 sm:space-y-8">
-				<Header />
+			<SettingsProvider>
+				<div className="space-y-4 sm:space-y-8">
+					<Header />
 
-				<ReadingList />
+					<ReadingList />
 
-				<ReadingView {...readings[0]} />
-			</div>
+					<ReadingView {...readings[1]} />
+				</div>
+			</SettingsProvider>
 		</ThemeProvider>
 	);
 }
