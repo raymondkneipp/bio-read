@@ -1,7 +1,9 @@
 import { Header } from "./components/header";
 import { ReadingList } from "./components/reading-list";
+import { ReadingView } from "./components/reading-view";
 import { ThemeProvider } from "./components/theme-provider";
 import { Button } from "./components/ui/button";
+import { readings } from "./mock/readings";
 
 export function App() {
 	return (
@@ -10,7 +12,8 @@ export function App() {
 				<Header />
 
 				<ReadingList />
-				<Button>Click Me</Button>
+
+				<ReadingView {...readings[0]} />
 			</div>
 		</ThemeProvider>
 	);
