@@ -1,6 +1,11 @@
 import { createContext, useState, use } from "react";
 
-export const readingFonts = ["Montserrat"] as const;
+export const readingFonts = [
+	"Montserrat",
+	"Playfair",
+	"Geist",
+	"Inter",
+] as const;
 export const readingSizes = ["sm", "md", "lg", "xl"] as const;
 
 export type ReadingFont = (typeof readingFonts)[number];
@@ -54,7 +59,7 @@ export const SettingsContext =
 	createContext<SettingsProviderState>(initialState);
 
 export function SettingsProvider({ children }: SettingsProviderProps) {
-	const [readingFont, setReadingFont] = useState<ReadingFont>("Montserrat");
+	const [readingFont, setReadingFont] = useState<ReadingFont>("Geist");
 	const [readingSize, setReadingSize] = useState<ReadingSize>("sm");
 	const [readingLineHeight, setReadingLineHeight] = useState<ReadingSize>("sm");
 	const [readingLetterSpacing, setReadingLetterSpacing] =

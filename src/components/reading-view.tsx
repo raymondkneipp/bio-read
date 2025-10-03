@@ -8,6 +8,7 @@ import { toBionicParagraphsHTML } from "@/lib/to-bionic-paragraphs";
 
 export function ReadingView(props: Reading) {
 	const {
+		readingFont,
 		readingSize,
 		readingLineHeight,
 		readingLetterSpacing,
@@ -26,9 +27,14 @@ export function ReadingView(props: Reading) {
 				className={cn(
 					"max-w-prose mx-auto space-y-4 sm:space-y-8 mt-8 sm:mt-16",
 					{
-						"font-dyslexic": dyslexicReadingFont,
+						"font-montserrat": readingFont === "Montserrat",
+						"font-geist": readingFont === "Geist",
+						"font-inter": readingFont === "Inter",
+						"font-playfair": readingFont === "Playfair",
+
 						"text-muted-foreground": bionicReading,
 						"text-foreground": !bionicReading,
+						"font-dyslexic": dyslexicReadingFont,
 					},
 				)}
 			>
