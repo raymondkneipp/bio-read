@@ -1,4 +1,4 @@
-import { ModeToggle } from "./components/mode-toggle";
+import { Header } from "./components/header";
 import { ReadingList } from "./components/reading-list";
 import { ThemeProvider } from "./components/theme-provider";
 import { Button } from "./components/ui/button";
@@ -6,15 +6,12 @@ import { Button } from "./components/ui/button";
 export function App() {
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<h1 className="font-bold text-2xl">BioRead</h1>
+			<div className="space-y-4 sm:space-y-8">
+				<Header />
 
-			<p className="font-sans">The quick brown fox jumps over the lazy dog</p>
-			<p className="font-dyslexic">
-				The quick brown fox jumps over the lazy dog
-			</p>
-			<ReadingList />
-			<Button>Click Me</Button>
-			<ModeToggle />
+				<ReadingList />
+				<Button>Click Me</Button>
+			</div>
 		</ThemeProvider>
 	);
 }

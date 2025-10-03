@@ -9,11 +9,12 @@ import {
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { readings } from "@/mock/readings";
+import { Progress } from "./ui/progress";
 
 export function ReadingList() {
 	return (
 		<div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-			<Card className="border-dashed bg-background">
+			<Card className="border-dashed bg-background shadow-none">
 				<CardHeader>
 					<CardTitle className="text-center">New Reading</CardTitle>
 				</CardHeader>
@@ -23,7 +24,7 @@ export function ReadingList() {
 			</Card>
 
 			{readings.map((reading) => (
-				<Card>
+				<Card className="relative overflow-hidden">
 					<CardHeader>
 						<CardTitle>{reading.title}</CardTitle>
 						<CardDescription>
@@ -32,7 +33,7 @@ export function ReadingList() {
 					</CardHeader>
 					<CardContent>
 						{/* TODO: Show preview of where user left off */}
-						<p className="line-clamp-2">{reading.content.slice(0, 400)}</p>
+						<p className="line-clamp-3">{reading.content.slice(0, 160)}</p>
 					</CardContent>
 					<CardFooter className="justify-end">
 						<Button variant="ghost" size="icon">
@@ -42,6 +43,11 @@ export function ReadingList() {
 							<TrashIcon />
 						</Button>
 					</CardFooter>
+
+					<Progress
+						value={(reading.progress * 100) / reading.content.split(" ").length}
+						className="absolute bottom-0 left-0 right-0 rounded-none"
+					/>
 				</Card>
 			))}
 		</div>
