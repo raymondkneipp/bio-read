@@ -112,10 +112,10 @@ export function Header(props: {
 								id="reading-size"
 							>
 								<TabsList className="w-full">
-									<TabsTrigger value="sm">SM</TabsTrigger>
-									<TabsTrigger value="md">MD</TabsTrigger>
-									<TabsTrigger value="lg">LG</TabsTrigger>
-									<TabsTrigger value="xl">XL</TabsTrigger>
+									<TabsTrigger value="sm">sm</TabsTrigger>
+									<TabsTrigger value="md">md</TabsTrigger>
+									<TabsTrigger value="lg">lg</TabsTrigger>
+									<TabsTrigger value="xl">xl</TabsTrigger>
 								</TabsList>
 							</Tabs>
 						</div>
@@ -130,10 +130,10 @@ export function Header(props: {
 								id="reading-line-height"
 							>
 								<TabsList className="w-full">
-									<TabsTrigger value="sm">SM</TabsTrigger>
-									<TabsTrigger value="md">MD</TabsTrigger>
-									<TabsTrigger value="lg">LG</TabsTrigger>
-									<TabsTrigger value="xl">XL</TabsTrigger>
+									<TabsTrigger value="sm">sm</TabsTrigger>
+									<TabsTrigger value="md">md</TabsTrigger>
+									<TabsTrigger value="lg">lg</TabsTrigger>
+									<TabsTrigger value="xl">xl</TabsTrigger>
 								</TabsList>
 							</Tabs>
 						</div>
@@ -148,10 +148,10 @@ export function Header(props: {
 								id="reading-letter-spacing"
 							>
 								<TabsList className="w-full">
-									<TabsTrigger value="sm">SM</TabsTrigger>
-									<TabsTrigger value="md">MD</TabsTrigger>
-									<TabsTrigger value="lg">LG</TabsTrigger>
-									<TabsTrigger value="xl">XL</TabsTrigger>
+									<TabsTrigger value="sm">sm</TabsTrigger>
+									<TabsTrigger value="md">md</TabsTrigger>
+									<TabsTrigger value="lg">lg</TabsTrigger>
+									<TabsTrigger value="xl">xl</TabsTrigger>
 								</TabsList>
 							</Tabs>
 						</div>
