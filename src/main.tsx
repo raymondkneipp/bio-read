@@ -8,9 +8,12 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/geist";
 import "@fontsource/opendyslexic/400.css";
 import "@fontsource/opendyslexic/700.css";
+import { Providers } from "./components/providers.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<App />
+		<Providers>
+			<App />
+		</Providers>
 	</StrictMode>,
 );

@@ -8,10 +8,12 @@ import {
 } from "@/components/ui/card";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { readings } from "@/mock/readings";
+import { readings, type Reading } from "@/mock/readings";
 import { Progress } from "@/components/ui/progress";
 
-export function ReadingList() {
+export function ReadingList(props: {
+	onReadingChange: React.Dispatch<React.SetStateAction<Reading | null>>;
+}) {
 	return (
 		<div className="container space-y-4 sm:space-y-8">
 			<h1 className="font-bold text-3xl">Your Readings</h1>
@@ -38,13 +40,22 @@ export function ReadingList() {
 							{/* TODO: Show preview of where user left off */}
 							<p className="line-clamp-3">{reading.content.slice(0, 160)}</p>
 						</CardContent>
-						<CardFooter className="justify-end">
-							<Button variant="ghost" size="icon">
-								<PencilIcon />
+						<CardFooter className="justify-between">
+							<Button
+								variant="link"
+								onClick={() => props.onReadingChange(reading)}
+							>
+								{reading.progress > 0 ? "Continue Reading" : "Start Reading"}
 							</Button>
-							<Button variant="ghost" size="icon">
-								<TrashIcon />
-							</Button>
+
+							<div className="flex items-center gap-1">
+								<Button variant="ghost" size="icon">
+									<PencilIcon />
+								</Button>
+								<Button variant="ghost" size="icon">
+									<TrashIcon />
+								</Button>
+							</div>
 						</CardFooter>
 
 						<Progress

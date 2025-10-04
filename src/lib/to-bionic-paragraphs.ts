@@ -14,7 +14,7 @@ export function toBionicParagraphsHTML(
 				const end = word.slice(cutoff);
 				return `<span class="font-bold text-foreground">${start}</span>${end}`;
 			});
-			return `<p>${words.join(" ")}</p>`;
+			return `<p class="indent-8">${words.join(" ")}</p>`;
 		})
 		.join("");
 }

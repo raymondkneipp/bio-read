@@ -3,6 +3,6 @@ export function toParagraphsHTML(text: string): string {
 		.split(/\n+/) // split on 1+ newlines
 		.map((p) => p.trim())
 		.filter((p) => p.length > 0) // skip empty lines
-		.map((p) => `<p>${p}</p>`)
+		.map((p) => `<p class="indent-8">${p}</p>`)
 		.join("");
 }

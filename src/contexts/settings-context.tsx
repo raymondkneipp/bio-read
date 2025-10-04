@@ -33,6 +33,9 @@ type SettingsProviderState = {
 
 	bionicReading: boolean;
 	setBionicReading: (bionicReading: boolean) => void;
+
+	rsvpReading: boolean;
+	setRSVPReading: (rsvpReading: boolean) => void;
 };
 
 const initialState: SettingsProviderState = {
@@ -53,6 +56,9 @@ const initialState: SettingsProviderState = {
 
 	bionicReading: true,
 	setBionicReading: () => null,
+
+	rsvpReading: true,
+	setRSVPReading: () => null,
 };
 
 export const SettingsContext =
@@ -60,13 +66,14 @@ export const SettingsContext =
 
 export function SettingsProvider({ children }: SettingsProviderProps) {
 	const [readingFont, setReadingFont] = useState<ReadingFont>("Geist");
-	const [readingSize, setReadingSize] = useState<ReadingSize>("sm");
-	const [readingLineHeight, setReadingLineHeight] = useState<ReadingSize>("sm");
+	const [readingSize, setReadingSize] = useState<ReadingSize>("md");
+	const [readingLineHeight, setReadingLineHeight] = useState<ReadingSize>("md");
 	const [readingLetterSpacing, setReadingLetterSpacing] =
-		useState<ReadingSize>("sm");
+		useState<ReadingSize>("md");
 
 	const [dyslexicReadingFont, setDyslexicReadingFont] = useState<boolean>(true);
 	const [bionicReading, setBionicReading] = useState<boolean>(true);
+	const [rsvpReading, setRSVPReading] = useState<boolean>(false);
 
 	return (
 		<SettingsContext
@@ -88,6 +95,9 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 
 				bionicReading,
 				setBionicReading,
+
+				rsvpReading,
+				setRSVPReading,
 			}}
 		>
 			{children}

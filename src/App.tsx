@@ -1,22 +1,33 @@
+import { useState } from "react";
 import { Header } from "./components/header";
 import { ReadingList } from "./components/reading-list";
 import { ReadingView } from "./components/reading-view";
-import { ThemeProvider } from "./components/theme-provider";
-import { SettingsProvider } from "./contexts/settings-context";
-import { readings } from "./mock/readings";
+import { useSettings } from "./contexts/settings-context";
+import { type Reading } from "./mock/readings";
+import { RSVP } from "./components/rsvp";
 
 export function App() {
+	const [selectedReading, setSelectedReading] = useState<Reading | null>(null);
+	const { rsvpReading } = useSettings();
+
 	return (
-		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<SettingsProvider>
-				<div className="space-y-4 sm:space-y-8">
-					<Header />
+		<div className="space-y-4 sm:space-y-8">
+			<Header
+				selectedReading={selectedReading}
+				onReadingChange={setSelectedReading}
+			/>
 
-					<ReadingList />
+			{!selectedReading && <ReadingList onReadingChange={setSelectedReading} />}
 
-					<ReadingView {...readings[1]} />
-				</div>
-			</SettingsProvider>
-		</ThemeProvider>
+			{selectedReading && (
+				<>
+					{rsvpReading ? (
+						<RSVP {...selectedReading} />
+					) : (
+						<ReadingView {...selectedReading} />
+					)}
+				</>
+			)}
+		</div>
 	);
 }
