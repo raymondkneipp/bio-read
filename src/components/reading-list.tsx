@@ -6,10 +6,18 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { BookOpenIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { readings, type Reading } from "@/mock/readings";
 import { Progress } from "@/components/ui/progress";
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
 
 export function ReadingList(props: {
 	onReadingChange: React.Dispatch<React.SetStateAction<Reading | null>>;
@@ -19,14 +27,23 @@ export function ReadingList(props: {
 			<h1 className="font-bold text-3xl">Your Readings</h1>
 
 			<div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-				<Card className="border-dashed bg-background shadow-none">
-					<CardHeader>
-						<CardTitle className="text-center">New Reading</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<PlusIcon className="size-24 mx-auto text-muted-foreground" />
-					</CardContent>
-				</Card>
+				<Empty className="col-span-full max-w-md mx-auto">
+					<EmptyHeader>
+						<EmptyMedia variant="icon">
+							<BookOpenIcon />
+						</EmptyMedia>
+					</EmptyHeader>
+					<EmptyTitle>Add Reading</EmptyTitle>
+					<EmptyDescription>
+						Add books, essays, or study materials you need to read. Keep
+						everything organized in one place.
+					</EmptyDescription>
+					<EmptyContent>
+						<Button onClick={() => alert("TODO: Implement add reading")}>
+							Add Reading
+						</Button>
+					</EmptyContent>
+				</Empty>
 
 				{readings.map((reading) => (
 					<Card className="relative overflow-hidden">

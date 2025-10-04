@@ -71,8 +71,9 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 	const [readingLetterSpacing, setReadingLetterSpacing] =
 		useState<ReadingSize>("md");
 
-	const [dyslexicReadingFont, setDyslexicReadingFont] = useState<boolean>(true);
-	const [bionicReading, setBionicReading] = useState<boolean>(true);
+	const [dyslexicReadingFont, setDyslexicReadingFont] =
+		useState<boolean>(false);
+	const [bionicReading, setBionicReading] = useState<boolean>(false);
 	const [rsvpReading, setRSVPReading] = useState<boolean>(false);
 
 	return (

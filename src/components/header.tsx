@@ -80,7 +80,7 @@ export function Header(props: {
 			<div className="flex items-center gap-2">
 				<Popover>
 					<PopoverTrigger asChild>
-						<Button size="icon" variant="outline">
+						<Button size="icon" variant="ghost">
 							<SettingsIcon />
 						</Button>
 					</PopoverTrigger>
