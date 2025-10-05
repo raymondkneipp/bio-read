@@ -3,9 +3,9 @@ import { Header } from "./components/header";
 import { ReadingList } from "./components/reading-list";
 import { ReadingView } from "./components/reading-view";
 import { useSettings } from "./contexts/settings-context";
-import { type Reading } from "./mock/readings";
 import { RSVP } from "./components/rsvp";
 import { Footer } from "./components/footer";
+import type { Reading } from "./db";
 
 export function App() {
 	const [selectedReading, setSelectedReading] = useState<Reading | null>(null);

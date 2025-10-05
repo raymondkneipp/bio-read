@@ -12,7 +12,7 @@ export function toBionicParagraphsHTML(
 				const cutoff = Math.ceil(word.length * ratio);
 				const start = word.slice(0, cutoff);
 				const end = word.slice(cutoff);
-				return `<span class="font-bold text-foreground">${start}</span>${end}`;
+				return `<span class="font-bold">${start}</span>${end}`;
 			});
 			return `<p class="indent-8">${words.join(" ")}</p>`;
 		})

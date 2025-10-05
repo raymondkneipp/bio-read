@@ -1,4 +1,3 @@
-import type { Reading } from "@/mock/readings";
 import { Progress } from "@/components/ui/progress";
 import { useSettings } from "@/contexts/settings-context";
 import { cn } from "@/lib/utils";
@@ -12,6 +11,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { Reading } from "@/db";
 
 export function ReadingView(props: Reading) {
 	const {
@@ -39,8 +39,6 @@ export function ReadingView(props: Reading) {
 						"font-inter": readingFont === "Inter",
 						"font-playfair": readingFont === "Playfair",
 
-						"text-muted-foreground": bionicReading,
-						"text-foreground": !bionicReading,
 						"font-dyslexic": dyslexicReadingFont,
 					},
 				)}

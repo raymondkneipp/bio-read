@@ -6,7 +6,7 @@ export function toBionicReading(text: string, ratio: number = 0.4): string {
 			const cutoff = Math.ceil(word.length * ratio); // how many letters to bold
 			const start = word.slice(0, cutoff);
 			const end = word.slice(cutoff);
-			return `<b class="text-foreground">${start}</b>${end}`;
+			return `<b>${start}</b>${end}`;
 		})
 		.join(" ");
 }

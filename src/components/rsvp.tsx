@@ -1,7 +1,6 @@
 import { useSettings } from "@/contexts/settings-context";
 import { toBionicReading } from "@/lib/to-bionic-reading";
 import { cn } from "@/lib/utils";
-import type { Reading } from "@/mock/readings";
 import { Progress } from "./ui/progress";
 import {
 	Tooltip,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "./ui/button";
 import { PlayIcon, RedoIcon, UndoIcon } from "lucide-react";
+import type { Reading } from "@/db";
 
 export function RSVP(props: Reading) {
 	const {
@@ -36,8 +36,6 @@ export function RSVP(props: Reading) {
 						"font-inter": readingFont === "Inter",
 						"font-playfair": readingFont === "Playfair",
 
-						"text-muted-foreground": bionicReading,
-						"text-foreground": !bionicReading,
 						"font-dyslexic": dyslexicReadingFont,
 					},
 				)}

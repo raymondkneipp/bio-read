@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { BookOpenIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { readings, type Reading } from "@/mock/readings";
 import { Progress } from "@/components/ui/progress";
 import {
 	Empty,
@@ -18,10 +17,17 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import { useReadings } from "@/hooks/use-readings";
+import type { Reading } from "@/db";
+import { ReadingNew } from "./reading-new";
+import { ReadingEdit } from "./reading-edit";
+import { ReadingDelete } from "./reading-delete";
 
 export function ReadingList(props: {
 	onReadingChange: React.Dispatch<React.SetStateAction<Reading | null>>;
 }) {
+	const { data } = useReadings();
+
 	return (
 		<div className="container space-y-4 sm:space-y-8">
 			<h1 className="font-bold text-3xl">Your Readings</h1>
@@ -39,23 +45,23 @@ export function ReadingList(props: {
 						everything organized in one place.
 					</EmptyDescription>
 					<EmptyContent>
-						<Button onClick={() => alert("TODO: Implement add reading")}>
-							Add Reading
-						</Button>
+						<ReadingNew />
 					</EmptyContent>
 				</Empty>
 
-				{readings.map((reading) => (
-					<Card className="relative overflow-hidden">
+				{data?.map((reading) => (
+					<Card className="relative overflow-hidden" key={reading.id}>
 						<CardHeader>
 							<CardTitle>{reading.title}</CardTitle>
 							<CardDescription>
 								{reading.createdAt.toLocaleString()}
 							</CardDescription>
 						</CardHeader>
-						<CardContent>
+						<CardContent className="flex-grow">
 							{/* TODO: Show preview of where user left off */}
-							<p className="line-clamp-3">{reading.content.slice(0, 160)}</p>
+							<p className="line-clamp-3 break-all">
+								{reading.content.slice(0, 160)}
+							</p>
 						</CardContent>
 						<CardFooter className="justify-between">
 							<Button
@@ -66,12 +72,16 @@ export function ReadingList(props: {
 							</Button>
 
 							<div className="flex items-center gap-1">
-								<Button variant="ghost" size="icon">
-									<PencilIcon />
-								</Button>
-								<Button variant="ghost" size="icon">
-									<TrashIcon />
-								</Button>
+								<ReadingEdit reading={reading}>
+									<Button variant="ghost" size="icon">
+										<PencilIcon />
+									</Button>
+								</ReadingEdit>
+								<ReadingDelete readingId={reading.id} title={reading.title}>
+									<Button variant="ghost" size="icon">
+										<TrashIcon />
+									</Button>
+								</ReadingDelete>
 							</div>
 						</CardFooter>
 

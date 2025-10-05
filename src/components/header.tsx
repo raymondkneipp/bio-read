@@ -22,7 +22,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Reading } from "@/mock/readings";
+import type { Reading } from "@/db";
 
 export function Header(props: {
 	selectedReading: Reading | null;
