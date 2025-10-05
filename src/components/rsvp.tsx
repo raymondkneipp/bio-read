@@ -25,6 +25,8 @@ export function RSVP(props: Reading) {
 		? toBionicReading(props.content.split(" ")[props.progress])
 		: props.content.split(" ")[props.progress];
 
+	// TODO: Once sentence is passed, update progress.
+
 	return (
 		<div className="px-4 sm:px-8 min-h-[calc(100svh-117px)] flex items-center justify-center">
 			<div

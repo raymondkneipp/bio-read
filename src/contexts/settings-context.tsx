@@ -1,3 +1,7 @@
+// TODO: Persist settings in dexie.js
+// TODO: Reading aloud voice settings (voice and speed)
+// TODO: RSVP speed setting
+
 import { createContext, useState, use } from "react";
 
 export const readingFonts = [

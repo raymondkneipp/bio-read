@@ -28,6 +28,10 @@ export function ReadingView(props: Reading) {
 		? toBionicParagraphsHTML(props.content)
 		: toParagraphsHTML(props.content);
 
+	// TODO: As user scrolls update progress as sentence leaves viewport.
+	// TODO: If reading aloud, update progress once sentence is read. Scroll to current sentence being read and highlight sentence.
+	// TODO: When component enters view scroll to current progress and hightlight sentence.
+
 	return (
 		<div className="px-4 sm:px-8">
 			<div

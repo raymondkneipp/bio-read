@@ -58,9 +58,12 @@ export function ReadingList(props: {
 							</CardDescription>
 						</CardHeader>
 						<CardContent className="flex-grow">
-							{/* TODO: Show preview of where user left off */}
+							{/* TODO: Show preview of where user left off (ensure this is correct) */}
 							<p className="line-clamp-3 break-all">
-								{reading.content.slice(0, 160)}
+								{reading.content.slice(
+									reading.progress,
+									160 + reading.progress,
+								)}
 							</p>
 						</CardContent>
 						<CardFooter className="justify-between">
