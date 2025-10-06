@@ -53,6 +53,7 @@
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, monospace;
 
+  --font-montserrat: 'Montserrat Variable', serif;
   --font-playfair: 'Playfair Display Variable', serif;
   --font-geist: 'Geist Variable', serif;
   --font-inter: 'Inter Variable', serif;
@@ -115,6 +116,7 @@
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, monospace;
 
+  --font-montserrat: 'Montserrat Variable', serif;
   --font-playfair: 'Playfair Display Variable', serif;
   --font-geist: 'Geist Variable', serif;
   --font-inter: 'Inter Variable', serif;
@@ -175,6 +177,7 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
+  --font-montserrat: var(--font-montserrat);
   --font-playfair: var(--font-playfair);
   --font-geist: var(--font-geist);
   --font-inter: var(--font-inter);
