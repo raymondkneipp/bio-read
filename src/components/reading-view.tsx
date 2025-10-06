@@ -12,6 +12,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { Reading } from "@/db";
+import { Kbd } from "./ui/kbd";
 
 export function ReadingView(props: Reading) {
 	const {
@@ -31,6 +32,19 @@ export function ReadingView(props: Reading) {
 	// TODO: As user scrolls update progress as sentence leaves viewport.
 	// TODO: If reading aloud, update progress once sentence is read. Scroll to current sentence being read and highlight sentence.
 	// TODO: When component enters view scroll to current progress and hightlight sentence.
+
+	const segments = props.content.split(/(?<=[\.\,\!\?\-]{1,2})\s+/);
+	console.log(segments);
+
+	function splitParagraphs(text: string): string[] {
+		return text
+			.trim()
+			.split(/\n+/)
+			.map((p) => p.trim())
+			.filter(Boolean);
+	}
+
+	console.log(splitParagraphs(props.content));
 
 	return (
 		<div className="px-4 sm:px-8">
@@ -92,7 +106,7 @@ export function ReadingView(props: Reading) {
 				</div>
 			</div>
 
-			<div className="fixed bottom-2 left-0 right-0 flex gap-4 items-center justify-center bg-gradient-to-t from-background via-background/80 to-transparent px-12 pt-4 pb-2">
+			<div className="fixed bottom-0 left-0 right-0 flex gap-4 items-center justify-center bg-gradient-to-t from-background via-background/80 to-transparent px-12 pt-4 pb-4">
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button
@@ -108,8 +122,9 @@ export function ReadingView(props: Reading) {
 							<UndoIcon />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>
+					<TooltipContent className="flex gap-2 items-center">
 						<p>Rewind</p>
+						<Kbd>←</Kbd>
 					</TooltipContent>
 				</Tooltip>
 
@@ -126,8 +141,9 @@ export function ReadingView(props: Reading) {
 							<MegaphoneIcon className="size-5" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>
+					<TooltipContent className="flex gap-2 items-center">
 						<p>Read Aloud</p>
+						<Kbd>␣</Kbd>
 					</TooltipContent>
 				</Tooltip>
 
@@ -146,8 +162,9 @@ export function ReadingView(props: Reading) {
 							<RedoIcon />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>
+					<TooltipContent className="flex gap-2 items-center">
 						<p>Skip</p>
+						<Kbd>→</Kbd>
 					</TooltipContent>
 				</Tooltip>
 			</div>

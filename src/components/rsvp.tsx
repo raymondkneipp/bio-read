@@ -10,6 +10,7 @@ import {
 import { Button } from "./ui/button";
 import { PlayIcon, RedoIcon, UndoIcon } from "lucide-react";
 import type { Reading } from "@/db";
+import { Kbd } from "./ui/kbd";
 
 export function RSVP(props: Reading) {
 	const {
@@ -63,7 +64,7 @@ export function RSVP(props: Reading) {
 				/>
 			</div>
 
-			<div className="fixed bottom-2 left-0 right-0 flex gap-4 items-center justify-center bg-gradient-to-t from-background via-background/80 to-transparent px-12 pt-4 pb-2">
+			<div className="fixed bottom-0 left-0 right-0 flex gap-4 items-center justify-center bg-gradient-to-t from-background via-background/80 to-transparent px-12 pt-4 pb-4">
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button
@@ -79,8 +80,9 @@ export function RSVP(props: Reading) {
 							<UndoIcon />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>
+					<TooltipContent className="flex gap-2 items-center">
 						<p>Rewind</p>
+						<Kbd>←</Kbd>
 					</TooltipContent>
 				</Tooltip>
 
@@ -97,8 +99,9 @@ export function RSVP(props: Reading) {
 							<PlayIcon className="size-5" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>
+					<TooltipContent className="flex gap-2 items-center">
 						<p>RSVP</p>
+						<Kbd>␣</Kbd>
 					</TooltipContent>
 				</Tooltip>
 
@@ -117,8 +120,9 @@ export function RSVP(props: Reading) {
 							<RedoIcon />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>
+					<TooltipContent className="flex gap-2 items-center">
 						<p>Skip</p>
+						<Kbd>→</Kbd>
 					</TooltipContent>
 				</Tooltip>
 			</div>
