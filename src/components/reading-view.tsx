@@ -77,7 +77,7 @@ function Sentence({
 		<>
 			<span
 				data-sentence-id={sentence.id}
-				className={active ? "bg-yellow-200" : ""}
+				className={active ? "bg-yellow-200 dark:bg-yellow-900" : ""}
 				dangerouslySetInnerHTML={{
 					__html: bionicReading ? sentence.bionicHTML : sentence.text,
 				}}
@@ -114,19 +114,24 @@ export function ReadingView(props: Reading) {
 			// Find the sentence in the processed data
 			const [paragraphIndex, sentenceIndex] = sentenceId.split("-").map(Number);
 			const targetSentence = data[paragraphIndex]?.sentences[sentenceIndex];
-			
+
 			if (!targetSentence) return 0;
-			
+
 			// Find the position of this sentence in the original text
 			const sentenceText = targetSentence.text;
 			const sentenceStartIndex = props.content.indexOf(sentenceText);
-			
+
 			if (sentenceStartIndex === -1) return 0;
-			
+
 			// Count words up to the end of this sentence
-			const textUpToSentence = props.content.substring(0, sentenceStartIndex + sentenceText.length);
-			const wordsUpToSentence = textUpToSentence.split(/\s+/).filter(word => word.length > 0);
-			
+			const textUpToSentence = props.content.substring(
+				0,
+				sentenceStartIndex + sentenceText.length,
+			);
+			const wordsUpToSentence = textUpToSentence
+				.split(/\s+/)
+				.filter((word) => word.length > 0);
+
 			return wordsUpToSentence.length;
 		},
 		[data, props.content],
@@ -136,14 +141,20 @@ export function ReadingView(props: Reading) {
 	const findSentenceIdByProgress = useCallback(
 		(targetProgress: number) => {
 			// Use the same word splitting method as RSVP for consistency
-			const allWords = props.content.split(/\s+/).filter(word => word.length > 0);
-			
+			const allWords = props.content
+				.split(/\s+/)
+				.filter((word) => word.length > 0);
+
 			// If target progress is beyond all words, return last sentence
 			if (targetProgress >= allWords.length) {
 				const lastParagraph = data[data.length - 1];
 				if (lastParagraph && lastParagraph.sentences.length > 0) {
-					const lastSentence = lastParagraph.sentences[lastParagraph.sentences.length - 1];
-					return lastSentence.id ?? `${data.length - 1}-${lastParagraph.sentences.length - 1}`;
+					const lastSentence =
+						lastParagraph.sentences[lastParagraph.sentences.length - 1];
+					return (
+						lastSentence.id ??
+						`${data.length - 1}-${lastParagraph.sentences.length - 1}`
+					);
 				}
 				return "0-0";
 			}
@@ -160,13 +171,18 @@ export function ReadingView(props: Reading) {
 					// Find the position of this sentence in the original text
 					const sentenceText = sentence.text;
 					const sentenceStartIndex = props.content.indexOf(sentenceText);
-					
+
 					if (sentenceStartIndex === -1) continue;
-					
+
 					// Count words up to the end of this sentence
-					const textUpToSentence = props.content.substring(0, sentenceStartIndex + sentenceText.length);
-					const wordsUpToSentence = textUpToSentence.split(/\s+/).filter(word => word.length > 0);
-					
+					const textUpToSentence = props.content.substring(
+						0,
+						sentenceStartIndex + sentenceText.length,
+					);
+					const wordsUpToSentence = textUpToSentence
+						.split(/\s+/)
+						.filter((word) => word.length > 0);
+
 					// If we've reached or exceeded the target progress, return this sentence
 					if (wordsUpToSentence.length >= targetProgress) {
 						return sentence.id ?? `${p}-${s}`;
@@ -204,15 +220,25 @@ export function ReadingView(props: Reading) {
 	// Sync with progress changes when switching between modes
 	// Use a ref to track if we're in the middle of manual navigation or reading aloud
 	const isManualNavigation = useRef(false);
-	
+
 	useEffect(() => {
-		if (hasInitialized.current && !isManualNavigation.current && !isReadingAloud && !isAutoAdvancing) {
+		if (
+			hasInitialized.current &&
+			!isManualNavigation.current &&
+			!isReadingAloud &&
+			!isAutoAdvancing
+		) {
 			const sentenceId = findSentenceIdByProgress(props.progress);
 			setActiveSentenceId(sentenceId);
 		}
 		// Reset the flag after processing
 		isManualNavigation.current = false;
-	}, [props.progress, findSentenceIdByProgress, isReadingAloud, isAutoAdvancing]);
+	}, [
+		props.progress,
+		findSentenceIdByProgress,
+		isReadingAloud,
+		isAutoAdvancing,
+	]);
 
 	// Scroll to active sentence when activeSentenceId changes
 	useEffect(() => {
@@ -250,10 +276,10 @@ export function ReadingView(props: Reading) {
 	const nextSentence = useCallback(() => {
 		// Pause reading when manually navigating
 		pauseReading();
-		
+
 		// Set flag to prevent sync useEffect from interfering
 		isManualNavigation.current = true;
-		
+
 		const currentIndex = flatSentences.findIndex(
 			(id) => id === activeSentenceId,
 		);
@@ -268,10 +294,10 @@ export function ReadingView(props: Reading) {
 	const prevSentence = useCallback(() => {
 		// Pause reading when manually navigating
 		pauseReading();
-		
+
 		// Set flag to prevent sync useEffect from interfering
 		isManualNavigation.current = true;
-		
+
 		const currentIndex = flatSentences.findIndex(
 			(id) => id === activeSentenceId,
 		);
@@ -290,77 +316,96 @@ export function ReadingView(props: Reading) {
 	// Speech synthesis functions
 	const getSpeedValue = useCallback((speed: SpeechSpeed): number => {
 		switch (speed) {
-			case "0.5x": return 0.5;
-			case "0.75x": return 0.75;
-			case "normal": return 1;
-			case "1.25x": return 1.25;
-			case "1.5x": return 1.5;
-			case "2x": return 2;
-			default: return 1;
+			case "0.5x":
+				return 0.5;
+			case "0.75x":
+				return 0.75;
+			case "normal":
+				return 1;
+			case "1.25x":
+				return 1.25;
+			case "1.5x":
+				return 1.5;
+			case "2x":
+				return 2;
+			default:
+				return 1;
 		}
 	}, []);
 
-	const speakSentence = useCallback((sentenceId: string) => {
-		// Check if paused
-		if (isPaused.current) {
-			return;
-		}
+	const speakSentence = useCallback(
+		(sentenceId: string) => {
+			// Check if paused
+			if (isPaused.current) {
+				return;
+			}
 
-		// Find the sentence text
-		const [paragraphIndex, sentenceIndex] = sentenceId.split("-").map(Number);
-		const sentence = data[paragraphIndex]?.sentences[sentenceIndex];
-		if (!sentence) return;
+			// Find the sentence text
+			const [paragraphIndex, sentenceIndex] = sentenceId.split("-").map(Number);
+			const sentence = data[paragraphIndex]?.sentences[sentenceIndex];
+			if (!sentence) return;
 
-		// Stop any current speech
-		if (speechSynthesis.current) {
-			window.speechSynthesis.cancel();
-		}
+			// Stop any current speech
+			if (speechSynthesis.current) {
+				window.speechSynthesis.cancel();
+			}
 
-		// Create new speech synthesis
-		const utterance = new SpeechSynthesisUtterance(sentence.text);
-		
-		// Set voice
-		if (selectedVoice && selectedVoice !== "default") {
-			const voices = window.speechSynthesis.getVoices();
-			const voice = voices.find(v => v.name === selectedVoice);
-			if (voice) utterance.voice = voice;
-		}
+			// Create new speech synthesis
+			const utterance = new SpeechSynthesisUtterance(sentence.text);
 
-		// Set speed
-		utterance.rate = getSpeedValue(speechSpeed);
+			// Set voice
+			if (selectedVoice && selectedVoice !== "default") {
+				const voices = window.speechSynthesis.getVoices();
+				const voice = voices.find((v) => v.name === selectedVoice);
+				if (voice) utterance.voice = voice;
+			}
 
-		// Set up event handlers
-		utterance.onend = () => {
-			// Auto-advance to next sentence only if not paused
-			if (!isPaused.current) {
-				const currentIndex = flatSentences.findIndex((id) => id === sentenceId);
-				if (currentIndex < flatSentences.length - 1) {
-					setIsAutoAdvancing(true);
-					const nextSentenceId = flatSentences[currentIndex + 1];
-					setActiveSentenceId(nextSentenceId);
-					updateProgress(nextSentenceId);
-					// Continue reading the next sentence
-					setTimeout(() => {
-						speakSentence(nextSentenceId);
-						setIsAutoAdvancing(false);
-					}, 100);
+			// Set speed
+			utterance.rate = getSpeedValue(speechSpeed);
+
+			// Set up event handlers
+			utterance.onend = () => {
+				// Auto-advance to next sentence only if not paused
+				if (!isPaused.current) {
+					const currentIndex = flatSentences.findIndex(
+						(id) => id === sentenceId,
+					);
+					if (currentIndex < flatSentences.length - 1) {
+						setIsAutoAdvancing(true);
+						const nextSentenceId = flatSentences[currentIndex + 1];
+						setActiveSentenceId(nextSentenceId);
+						updateProgress(nextSentenceId);
+						// Continue reading the next sentence
+						setTimeout(() => {
+							speakSentence(nextSentenceId);
+							setIsAutoAdvancing(false);
+						}, 100);
+					} else {
+						setIsReadingAloud(false);
+					}
 				} else {
 					setIsReadingAloud(false);
 				}
-			} else {
+			};
+
+			utterance.onerror = () => {
 				setIsReadingAloud(false);
-			}
-		};
+			};
 
-		utterance.onerror = () => {
-			setIsReadingAloud(false);
-		};
-
-		// Start speaking
-		window.speechSynthesis.speak(utterance);
-		speechSynthesis.current = utterance;
-		setIsReadingAloud(true);
-	}, [selectedVoice, speechSpeed, data, flatSentences, updateProgress, getSpeedValue]);
+			// Start speaking
+			window.speechSynthesis.speak(utterance);
+			speechSynthesis.current = utterance;
+			setIsReadingAloud(true);
+		},
+		[
+			selectedVoice,
+			speechSpeed,
+			data,
+			flatSentences,
+			updateProgress,
+			getSpeedValue,
+		],
+	);
 
 	const toggleReadingAloud = useCallback(() => {
 		if (isReadingAloud) {
@@ -498,7 +543,9 @@ export function ReadingView(props: Reading) {
 					<TooltipTrigger asChild>
 						<Button
 							size="icon"
-							variant={isReadingAloud || isAutoAdvancing ? "default" : "secondary"}
+							variant={
+								isReadingAloud || isAutoAdvancing ? "default" : "secondary"
+							}
 							onClick={toggleReadingAloud}
 							className="size-12 rounded-full shadow-md"
 						>
