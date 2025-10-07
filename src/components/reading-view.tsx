@@ -111,40 +111,44 @@ export function ReadingView(props: Reading) {
 	// Calculate word count up to current sentence
 	const calculateWordCountUpToSentence = useCallback(
 		(sentenceId: string) => {
-			let wordCount = 0;
+			// Find the sentence in the processed data
 			const [paragraphIndex, sentenceIndex] = sentenceId.split("-").map(Number);
-
-			// Count words in all previous paragraphs
-			for (let p = 0; p < paragraphIndex; p++) {
-				const paragraph = data[p];
-				if (paragraph) {
-					wordCount += paragraph.sentences.reduce(
-						(count, sentence) => count + sentence.text.split(/\s+/).length,
-						0,
-					);
-				}
-			}
-
-			// Count words in current paragraph up to current sentence
-			if (data[paragraphIndex]) {
-				for (let s = 0; s <= sentenceIndex; s++) {
-					const sentence = data[paragraphIndex].sentences[s];
-					if (sentence) {
-						wordCount += sentence.text.split(/\s+/).length;
-					}
-				}
-			}
-
-			return wordCount;
+			const targetSentence = data[paragraphIndex]?.sentences[sentenceIndex];
+			
+			if (!targetSentence) return 0;
+			
+			// Find the position of this sentence in the original text
+			const sentenceText = targetSentence.text;
+			const sentenceStartIndex = props.content.indexOf(sentenceText);
+			
+			if (sentenceStartIndex === -1) return 0;
+			
+			// Count words up to the end of this sentence
+			const textUpToSentence = props.content.substring(0, sentenceStartIndex + sentenceText.length);
+			const wordsUpToSentence = textUpToSentence.split(/\s+/).filter(word => word.length > 0);
+			
+			return wordsUpToSentence.length;
 		},
-		[data],
+		[data, props.content],
 	);
 
 	// Find sentence ID based on progress (word index)
 	const findSentenceIdByProgress = useCallback(
 		(targetProgress: number) => {
-			let currentWordCount = 0;
+			// Use the same word splitting method as RSVP for consistency
+			const allWords = props.content.split(/\s+/).filter(word => word.length > 0);
+			
+			// If target progress is beyond all words, return last sentence
+			if (targetProgress >= allWords.length) {
+				const lastParagraph = data[data.length - 1];
+				if (lastParagraph && lastParagraph.sentences.length > 0) {
+					const lastSentence = lastParagraph.sentences[lastParagraph.sentences.length - 1];
+					return lastSentence.id ?? `${data.length - 1}-${lastParagraph.sentences.length - 1}`;
+				}
+				return "0-0";
+			}
 
+			// Find which sentence contains the word at targetProgress
 			for (let p = 0; p < data.length; p++) {
 				const paragraph = data[p];
 				if (!paragraph) continue;
@@ -153,31 +157,27 @@ export function ReadingView(props: Reading) {
 					const sentence = paragraph.sentences[s];
 					if (!sentence) continue;
 
-					const sentenceWordCount = sentence.text.split(/\s+/).length;
-					currentWordCount += sentenceWordCount;
-
+					// Find the position of this sentence in the original text
+					const sentenceText = sentence.text;
+					const sentenceStartIndex = props.content.indexOf(sentenceText);
+					
+					if (sentenceStartIndex === -1) continue;
+					
+					// Count words up to the end of this sentence
+					const textUpToSentence = props.content.substring(0, sentenceStartIndex + sentenceText.length);
+					const wordsUpToSentence = textUpToSentence.split(/\s+/).filter(word => word.length > 0);
+					
 					// If we've reached or exceeded the target progress, return this sentence
-					if (currentWordCount >= targetProgress) {
+					if (wordsUpToSentence.length >= targetProgress) {
 						return sentence.id ?? `${p}-${s}`;
 					}
 				}
 			}
 
-			// If progress is beyond all content, return the last sentence
-			const lastParagraph = data[data.length - 1];
-			if (lastParagraph && lastParagraph.sentences.length > 0) {
-				const lastSentence =
-					lastParagraph.sentences[lastParagraph.sentences.length - 1];
-				return (
-					lastSentence.id ??
-					`${data.length - 1}-${lastParagraph.sentences.length - 1}`
-				);
-			}
-
 			// Fallback to first sentence
 			return "0-0";
 		},
-		[data],
+		[data, props.content],
 	);
 
 	const [activeSentenceId, setActiveSentenceId] = useState("0-0");
@@ -200,6 +200,19 @@ export function ReadingView(props: Reading) {
 			hasInitialized.current = true;
 		}
 	}, [props.progress, findSentenceIdByProgress]);
+
+	// Sync with progress changes when switching between modes
+	// Use a ref to track if we're in the middle of manual navigation or reading aloud
+	const isManualNavigation = useRef(false);
+	
+	useEffect(() => {
+		if (hasInitialized.current && !isManualNavigation.current && !isReadingAloud && !isAutoAdvancing) {
+			const sentenceId = findSentenceIdByProgress(props.progress);
+			setActiveSentenceId(sentenceId);
+		}
+		// Reset the flag after processing
+		isManualNavigation.current = false;
+	}, [props.progress, findSentenceIdByProgress, isReadingAloud, isAutoAdvancing]);
 
 	// Scroll to active sentence when activeSentenceId changes
 	useEffect(() => {
@@ -238,6 +251,9 @@ export function ReadingView(props: Reading) {
 		// Pause reading when manually navigating
 		pauseReading();
 		
+		// Set flag to prevent sync useEffect from interfering
+		isManualNavigation.current = true;
+		
 		const currentIndex = flatSentences.findIndex(
 			(id) => id === activeSentenceId,
 		);
@@ -252,6 +268,9 @@ export function ReadingView(props: Reading) {
 	const prevSentence = useCallback(() => {
 		// Pause reading when manually navigating
 		pauseReading();
+		
+		// Set flag to prevent sync useEffect from interfering
+		isManualNavigation.current = true;
 		
 		const currentIndex = flatSentences.findIndex(
 			(id) => id === activeSentenceId,

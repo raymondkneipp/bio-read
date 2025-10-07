@@ -1,5 +1,4 @@
 // TODO: Persist settings in dexie.js
-// TODO: RSVP speed setting
 
 import { createContext, useState, use } from "react";
 
@@ -54,6 +53,9 @@ type SettingsProviderState = {
 
 	speechSpeed: SpeechSpeed;
 	setSpeechSpeed: (speed: SpeechSpeed) => void;
+
+	rsvpSpeed: number;
+	setRSVPSpeed: (speed: number) => void;
 };
 
 const initialState: SettingsProviderState = {
@@ -83,6 +85,9 @@ const initialState: SettingsProviderState = {
 
 	speechSpeed: "normal",
 	setSpeechSpeed: () => null,
+
+	rsvpSpeed: 300,
+	setRSVPSpeed: () => null,
 };
 
 export const SettingsContext =
@@ -102,6 +107,7 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 
 	const [selectedVoice, setSelectedVoice] = useState<string>("default");
 	const [speechSpeed, setSpeechSpeed] = useState<SpeechSpeed>("normal");
+	const [rsvpSpeed, setRSVPSpeed] = useState<number>(300);
 
 	return (
 		<SettingsContext
@@ -132,6 +138,9 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 
 				speechSpeed,
 				setSpeechSpeed,
+
+				rsvpSpeed,
+				setRSVPSpeed,
 			}}
 		>
 			{children}

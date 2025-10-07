@@ -8,9 +8,11 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "./ui/button";
-import { PlayIcon, RedoIcon, UndoIcon } from "lucide-react";
+import { PlayIcon, RedoIcon, UndoIcon, PauseIcon } from "lucide-react";
 import type { Reading } from "@/db";
+import { db } from "@/db";
 import { Kbd } from "./ui/kbd";
+import { useState, useEffect, useCallback } from "react";
 
 export function RSVP(props: Reading) {
 	const {
@@ -20,13 +22,107 @@ export function RSVP(props: Reading) {
 		readingLetterSpacing,
 		dyslexicReadingFont,
 		bionicReading,
+		rsvpSpeed,
 	} = useSettings();
 
-	const content = bionicReading
-		? toBionicReading(props.content.split(" ")[props.progress])
-		: props.content.split(" ")[props.progress];
+	const [isPlaying, setIsPlaying] = useState(false);
+	// Convert progress (word count) to word index (0-based)
+	const [currentWordIndex, setCurrentWordIndex] = useState(Math.max(0, props.progress - 1));
 
-	// TODO: Once sentence is passed, update progress.
+	// Sync with progress changes when switching between modes
+	useEffect(() => {
+		setCurrentWordIndex(Math.max(0, props.progress - 1));
+	}, [props.progress]);
+	
+	// Split content by words
+	const words = props.content.split(/\s+/).filter(word => word.length > 0);
+
+	const content = bionicReading
+		? toBionicReading(words[currentWordIndex] || "")
+		: words[currentWordIndex] || "";
+
+	// Create safe HTML content for dangerouslySetInnerHTML
+	const htmlContent = { __html: content };
+
+	// Update progress in database
+	const updateProgress = useCallback(
+		async (wordIndex: number) => {
+			// Store progress as word count up to and including the current word
+			await db.readings.update(props.id, { progress: wordIndex + 1 });
+		},
+		[props.id],
+	);
+
+	// RSVP functionality
+	const startRSVP = useCallback(() => {
+		setIsPlaying(true);
+	}, []);
+
+	const stopRSVP = useCallback(() => {
+		setIsPlaying(false);
+	}, []);
+
+	const goToPreviousWord = useCallback(() => {
+		// Pause RSVP when manually navigating
+		setIsPlaying(false);
+		setCurrentWordIndex((prev) => {
+			const newIndex = Math.max(0, prev - 1);
+			updateProgress(newIndex);
+			return newIndex;
+		});
+	}, [updateProgress]);
+
+	const goToNextWord = useCallback(() => {
+		// Pause RSVP when manually navigating
+		setIsPlaying(false);
+		setCurrentWordIndex((prev) => {
+			const newIndex = Math.min(words.length - 1, prev + 1);
+			updateProgress(newIndex);
+			return newIndex;
+		});
+	}, [words.length, updateProgress]);
+
+	// Auto-advance words when playing
+	useEffect(() => {
+		if (!isPlaying) return;
+
+		const interval = setInterval(() => {
+			setCurrentWordIndex((prev) => {
+				if (prev >= words.length - 1) {
+					setIsPlaying(false);
+					return prev;
+				}
+				const newIndex = prev + 1;
+				updateProgress(newIndex);
+				return newIndex;
+			});
+		}, rsvpSpeed);
+
+		return () => clearInterval(interval);
+	}, [isPlaying, rsvpSpeed, words.length, updateProgress]);
+
+	// Keyboard controls
+	useEffect(() => {
+		const handleKeyPress = (event: KeyboardEvent) => {
+			if (event.code === "Space") {
+				event.preventDefault();
+				if (isPlaying) {
+					stopRSVP();
+				} else {
+					startRSVP();
+				}
+			} else if (event.code === "ArrowLeft") {
+				event.preventDefault();
+				goToPreviousWord();
+			} else if (event.code === "ArrowRight") {
+				event.preventDefault();
+				goToNextWord();
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyPress);
+		return () => window.removeEventListener("keydown", handleKeyPress);
+	}, [isPlaying, startRSVP, stopRSVP, goToPreviousWord, goToNextWord]);
 
 	return (
 		<div className="px-4 sm:px-8 min-h-[calc(100svh-117px)] flex items-center justify-center">
@@ -60,7 +156,7 @@ export function RSVP(props: Reading) {
 						"tracking-wider": readingLetterSpacing === "lg",
 						"tracking-widest": readingLetterSpacing === "xl",
 					})}
-					dangerouslySetInnerHTML={{ __html: content }}
+					dangerouslySetInnerHTML={htmlContent}
 				/>
 			</div>
 
@@ -70,11 +166,8 @@ export function RSVP(props: Reading) {
 						<Button
 							size="icon"
 							variant="outline"
-							onClick={() =>
-								alert(
-									"TODO: Implement RSVP go back sentence (left arrow should trigger this)",
-								)
-							}
+							onClick={goToPreviousWord}
+							disabled={currentWordIndex === 0}
 							className="rounded-full shadow-md"
 						>
 							<UndoIcon />
@@ -90,17 +183,19 @@ export function RSVP(props: Reading) {
 					<TooltipTrigger asChild>
 						<Button
 							size="icon"
-							variant="secondary" // when activiated change to default
-							onClick={() =>
-								alert("TODO: Implement RSVP (space should trigger this)")
-							}
+							variant={isPlaying ? "default" : "secondary"}
+							onClick={isPlaying ? stopRSVP : startRSVP}
 							className="size-12 rounded-full shadow-md"
 						>
-							<PlayIcon className="size-5" />
+							{isPlaying ? (
+								<PauseIcon className="size-5" />
+							) : (
+								<PlayIcon className="size-5" />
+							)}
 						</Button>
 					</TooltipTrigger>
 					<TooltipContent className="flex gap-2 items-center">
-						<p>RSVP</p>
+						<p>{isPlaying ? "Pause" : "Play"}</p>
 						<Kbd>␣</Kbd>
 					</TooltipContent>
 				</Tooltip>
@@ -110,11 +205,8 @@ export function RSVP(props: Reading) {
 						<Button
 							size="icon"
 							variant="outline"
-							onClick={() =>
-								alert(
-									"TODO: Implement RSVP go forward sentence (right arrow should trigger this)",
-								)
-							}
+							onClick={goToNextWord}
+							disabled={currentWordIndex === words.length - 1}
 							className="rounded-full shadow-md"
 						>
 							<RedoIcon />
@@ -128,7 +220,7 @@ export function RSVP(props: Reading) {
 			</div>
 
 			<Progress
-				value={(props.progress * 100) / props.content.split(" ").length}
+				value={(currentWordIndex * 100) / words.length}
 				className="fixed bottom-0 left-0 right-0 rounded-none"
 			/>
 		</div>

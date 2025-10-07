@@ -24,6 +24,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
 import type { Reading } from "@/db";
 
 export function Header(props: {
@@ -57,6 +58,9 @@ export function Header(props: {
 
 		speechSpeed,
 		setSpeechSpeed,
+
+		rsvpSpeed,
+		setRSVPSpeed,
 	} = useSettings();
 	return (
 		<header className="border-b p-4 sm:px-8 flex items-center justify-between sticky top-0 bg-background z-10">
@@ -194,6 +198,28 @@ export function Header(props: {
 							/>
 							<Label htmlFor="rspv-reading">RSVP Reading</Label>
 						</div>
+
+						{rsvpReading && (
+							<div className="space-y-1.5">
+								<Label htmlFor="rsvp-speed">RSVP Speed</Label>
+								<div className="space-y-2">
+									<Slider
+										id="rsvp-speed"
+										min={100}
+										max={1000}
+										step={50}
+										value={[1100 - rsvpSpeed]}
+										onValueChange={(value) => setRSVPSpeed(1100 - value[0])}
+										className="w-full"
+									/>
+									<div className="flex justify-between text-xs text-muted-foreground">
+										<span>Slow</span>
+										<span className="font-medium">{rsvpSpeed}ms</span>
+										<span>Fast</span>
+									</div>
+								</div>
+							</div>
+						)}
 
 						<div className="space-y-1.5">
 							<Label htmlFor="voice-select">Voice</Label>
