@@ -1,9 +1,11 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import {
 	readingFonts,
+	speechSpeeds,
 	useSettings,
 	type ReadingFont,
 	type ReadingSize,
+	type SpeechSpeed,
 } from "@/contexts/settings-context";
 import {
 	Popover,
@@ -49,6 +51,12 @@ export function Header(props: {
 
 		rsvpReading,
 		setRSVPReading,
+
+		selectedVoice,
+		setSelectedVoice,
+
+		speechSpeed,
+		setSpeechSpeed,
 	} = useSettings();
 	return (
 		<header className="border-b p-4 sm:px-8 flex items-center justify-between sticky top-0 bg-background z-10">
@@ -98,7 +106,7 @@ export function Header(props: {
 								</SelectTrigger>
 								<SelectContent>
 									{readingFonts.map((font) => (
-										<SelectItem value={font}>{font}</SelectItem>
+										<SelectItem key={font} value={font}>{font}</SelectItem>
 									))}
 								</SelectContent>
 							</Select>
@@ -183,6 +191,45 @@ export function Header(props: {
 								onCheckedChange={setRSVPReading}
 							/>
 							<Label htmlFor="rspv-reading">RSVP Reading</Label>
+						</div>
+
+						<div className="space-y-1.5">
+							<Label htmlFor="voice-select">Voice</Label>
+							<Select
+								value={selectedVoice}
+								onValueChange={setSelectedVoice}
+							>
+								<SelectTrigger className="w-full" id="voice-select">
+									<SelectValue placeholder="Select Voice" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="default">Default Voice</SelectItem>
+									{typeof window !== 'undefined' && window.speechSynthesis?.getVoices().map((voice) => (
+										<SelectItem key={voice.name} value={voice.name}>
+											{voice.name} ({voice.lang})
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+
+						<div className="space-y-1.5">
+							<Label htmlFor="speed-select">Reading Speed</Label>
+							<Select
+								value={speechSpeed}
+								onValueChange={(speed) => setSpeechSpeed(speed as SpeechSpeed)}
+							>
+								<SelectTrigger className="w-full" id="speed-select">
+									<SelectValue placeholder="Select Speed" />
+								</SelectTrigger>
+								<SelectContent>
+									{speechSpeeds.map((speed) => (
+										<SelectItem key={speed} value={speed}>
+											{speed}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 						</div>
 					</PopoverContent>
 				</Popover>

@@ -22,11 +22,57 @@ import type { Reading } from "@/db";
 import { ReadingNew } from "./reading-new";
 import { ReadingEdit } from "./reading-edit";
 import { ReadingDelete } from "./reading-delete";
+import { db } from "@/db";
 
 export function ReadingList(props: {
 	onReadingChange: React.Dispatch<React.SetStateAction<Reading | null>>;
 }) {
 	const { data } = useReadings();
+
+	// Function to get preview text based on word count progress
+	const getPreviewText = (content: string, wordProgress: number) => {
+		const words = content.split(/\s+/);
+		const totalWords = words.length;
+		
+		// If no progress, show beginning
+		if (wordProgress === 0) {
+			const preview = words.slice(0, 20).join(" ");
+			return totalWords > 20 ? preview + "..." : preview;
+		}
+		
+		// If progress is beyond content, show end
+		if (wordProgress >= totalWords) {
+			const preview = words.slice(-20).join(" ");
+			return totalWords > 20 ? "..." + preview : preview;
+		}
+		
+		// Show words around the current progress point
+		const startIndex = Math.max(0, wordProgress - 10);
+		const endIndex = Math.min(totalWords, wordProgress + 10);
+		const preview = words.slice(startIndex, endIndex).join(" ");
+		const needsEllipsis = startIndex > 0 || endIndex < totalWords;
+		return needsEllipsis ? "..." + preview + "..." : preview;
+	};
+
+	// Function to check if reading is complete
+	const isReadingComplete = (reading: Reading) => {
+		const totalWords = reading.content.split(/\s+/).length;
+		return reading.progress >= totalWords;
+	};
+
+	// Function to handle reading click (start/continue/read again)
+	const handleReadingClick = async (reading: Reading) => {
+		if (isReadingComplete(reading)) {
+			// Reset progress for "Read again"
+			await db.readings.update(reading.id, { progress: 0 });
+			// Update the reading object with reset progress
+			const updatedReading = { ...reading, progress: 0 };
+			props.onReadingChange(updatedReading);
+		} else {
+			// Continue reading from current progress
+			props.onReadingChange(reading);
+		}
+	};
 
 	return (
 		<div className="container space-y-4 sm:space-y-8">
@@ -58,20 +104,21 @@ export function ReadingList(props: {
 							</CardDescription>
 						</CardHeader>
 						<CardContent className="flex-grow">
-							{/* TODO: Show preview of where user left off (ensure this is correct) */}
-							<p className="line-clamp-3 break-all">
-								{reading.content.slice(
-									reading.progress,
-									160 + reading.progress,
-								)}
+							<p className="line-clamp-3 text-muted-foreground">
+								{getPreviewText(reading.content, reading.progress)}
 							</p>
 						</CardContent>
 						<CardFooter className="justify-between">
 							<Button
 								variant="link"
-								onClick={() => props.onReadingChange(reading)}
+								onClick={() => handleReadingClick(reading)}
 							>
-								{reading.progress > 0 ? "Continue Reading" : "Start Reading"}
+								{isReadingComplete(reading) 
+									? "Read Again" 
+									: reading.progress > 0 
+										? "Continue Reading" 
+										: "Start Reading"
+								}
 							</Button>
 
 							<div className="flex items-center gap-1">

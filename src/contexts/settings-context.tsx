@@ -11,9 +11,11 @@ export const readingFonts = [
 	"Inter",
 ] as const;
 export const readingSizes = ["sm", "md", "lg", "xl"] as const;
+export const speechSpeeds = ["0.5x", "0.75x", "normal", "1.25x", "1.5x", "2x"] as const;
 
 export type ReadingFont = (typeof readingFonts)[number];
 export type ReadingSize = (typeof readingSizes)[number];
+export type SpeechSpeed = (typeof speechSpeeds)[number];
 
 type SettingsProviderProps = {
 	children: React.ReactNode;
@@ -40,6 +42,12 @@ type SettingsProviderState = {
 
 	rsvpReading: boolean;
 	setRSVPReading: (rsvpReading: boolean) => void;
+
+	selectedVoice: string;
+	setSelectedVoice: (voice: string) => void;
+
+	speechSpeed: SpeechSpeed;
+	setSpeechSpeed: (speed: SpeechSpeed) => void;
 };
 
 const initialState: SettingsProviderState = {
@@ -63,6 +71,12 @@ const initialState: SettingsProviderState = {
 
 	rsvpReading: true,
 	setRSVPReading: () => null,
+
+	selectedVoice: "default",
+	setSelectedVoice: () => null,
+
+	speechSpeed: "normal",
+	setSpeechSpeed: () => null,
 };
 
 export const SettingsContext =
@@ -79,6 +93,9 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 		useState<boolean>(false);
 	const [bionicReading, setBionicReading] = useState<boolean>(false);
 	const [rsvpReading, setRSVPReading] = useState<boolean>(false);
+
+	const [selectedVoice, setSelectedVoice] = useState<string>("default");
+	const [speechSpeed, setSpeechSpeed] = useState<SpeechSpeed>("normal");
 
 	return (
 		<SettingsContext
@@ -103,6 +120,12 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 
 				rsvpReading,
 				setRSVPReading,
+
+				selectedVoice,
+				setSelectedVoice,
+
+				speechSpeed,
+				setSpeechSpeed,
 			}}
 		>
 			{children}
