@@ -8,12 +8,33 @@ export interface Reading {
 	progress: number;
 }
 
+export interface Settings {
+	id: number;
+	readingFont: string;
+	readingSize: string;
+	readingLineHeight: string;
+	readingLetterSpacing: string;
+	dyslexicReadingFont: boolean;
+	bionicReading: boolean;
+	rsvpReading: boolean;
+	selectedVoice: string;
+	speechSpeed: string;
+	rsvpSpeed: number;
+	updatedAt: Date;
+}
+
 const db = new Dexie("BioReadDatabase") as Dexie & {
 	readings: EntityTable<Reading, "id">;
+	settings: EntityTable<Settings, "id">;
 };
 
 db.version(1).stores({
 	readings: "++id, title, content, createdAt, progress",
+});
+
+db.version(2).stores({
+	readings: "++id, title, content, createdAt, progress",
+	settings: "++id, readingFont, readingSize, readingLineHeight, readingLetterSpacing, dyslexicReadingFont, bionicReading, rsvpReading, selectedVoice, speechSpeed, rsvpSpeed, updatedAt",
 });
 
 db.on("populate", async () => {
@@ -43,5 +64,147 @@ With BioRead, every part of your reading experience is in your control — from 
 		createdAt: new Date(),
 	});
 });
+
+// Database utility functions
+export const dbUtils = {
+	async clearAllData(): Promise<void> {
+		try {
+			await db.settings.clear();
+			await db.readings.clear();
+		} catch (error) {
+			console.error('Error clearing database:', error);
+			throw error;
+		}
+	},
+
+	async resetSettings(): Promise<void> {
+		try {
+			await db.settings.clear();
+		} catch (error) {
+			console.error('Error resetting settings:', error);
+			throw error;
+		}
+	}
+};
+
+// Settings service functions
+export const settingsService = {
+	async getSettings(): Promise<Settings | null> {
+		try {
+			const settings = await db.settings.orderBy('updatedAt').last();
+			return settings || null;
+		} catch (error) {
+			console.error('Error getting settings:', error);
+			return null;
+		}
+	},
+
+	async initializeDefaultSettings(): Promise<void> {
+		try {
+			const existingSettings = await db.settings.orderBy('updatedAt').last();
+			if (!existingSettings) {
+				const defaultSettings: Omit<Settings, 'id' | 'updatedAt'> = {
+					readingFont: "Geist",
+					readingSize: "md",
+					readingLineHeight: "md",
+					readingLetterSpacing: "md",
+					dyslexicReadingFont: false,
+					bionicReading: false,
+					rsvpReading: false,
+					selectedVoice: "default",
+					speechSpeed: "normal",
+					rsvpSpeed: 300,
+				};
+				
+				await db.settings.add({
+					...defaultSettings,
+					updatedAt: new Date(),
+				});
+			}
+		} catch (error) {
+			console.error('Error initializing default settings:', error);
+			throw error;
+		}
+	},
+
+	async saveSettings(settingsData: Omit<Settings, 'id' | 'updatedAt'>): Promise<void> {
+		try {
+			// Clear all existing settings and add new one
+			await db.settings.clear();
+			await db.settings.add({
+				...settingsData,
+				updatedAt: new Date(),
+			});
+		} catch (error) {
+			console.error('Error saving settings:', error);
+			throw error;
+		}
+	},
+
+	async updateSetting<K extends keyof Omit<Settings, 'id' | 'updatedAt'>>(
+		key: K,
+		value: Settings[K]
+	): Promise<void> {
+		try {
+			const existingSettings = await db.settings.orderBy('updatedAt').last();
+			
+			if (existingSettings) {
+				await db.settings.update(existingSettings.id, {
+					[key]: value,
+					updatedAt: new Date(),
+				});
+			} else {
+				// Create new settings if none exist - use upsert to avoid constraint errors
+				const defaultSettings: Omit<Settings, 'id' | 'updatedAt'> = {
+					readingFont: "Geist",
+					readingSize: "md",
+					readingLineHeight: "md",
+					readingLetterSpacing: "md",
+					dyslexicReadingFont: false,
+					bionicReading: false,
+					rsvpReading: false,
+					selectedVoice: "default",
+					speechSpeed: "normal",
+					rsvpSpeed: 300,
+				};
+				
+				// Use put instead of add to avoid constraint errors
+				await db.settings.put({
+					...defaultSettings,
+					[key]: value,
+					id: 1, // Use a fixed ID for settings
+					updatedAt: new Date(),
+				});
+			}
+		} catch (error) {
+			console.error('Error updating setting:', error);
+			// If there's still an error, try to clear and recreate
+			try {
+				await db.settings.clear();
+				const defaultSettings: Omit<Settings, 'id' | 'updatedAt'> = {
+					readingFont: "Geist",
+					readingSize: "md",
+					readingLineHeight: "md",
+					readingLetterSpacing: "md",
+					dyslexicReadingFont: false,
+					bionicReading: false,
+					rsvpReading: false,
+					selectedVoice: "default",
+					speechSpeed: "normal",
+					rsvpSpeed: 300,
+				};
+				
+				await db.settings.add({
+					...defaultSettings,
+					[key]: value,
+					updatedAt: new Date(),
+				});
+			} catch (retryError) {
+				console.error('Error retrying settings creation:', retryError);
+				throw retryError;
+			}
+		}
+	}
+};
 
 export { db };

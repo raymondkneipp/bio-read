@@ -1,6 +1,5 @@
-// TODO: Persist settings in dexie.js
-
-import { createContext, useState, use } from "react";
+import { createContext, useState, use, useEffect } from "react";
+import { settingsService } from "../db";
 
 export const readingFonts = [
 	"Montserrat",
@@ -94,20 +93,139 @@ export const SettingsContext =
 	createContext<SettingsProviderState>(initialState);
 
 export function SettingsProvider({ children }: SettingsProviderProps) {
-	const [readingFont, setReadingFont] = useState<ReadingFont>("Geist");
-	const [readingSize, setReadingSize] = useState<ReadingSize>("md");
-	const [readingLineHeight, setReadingLineHeight] = useState<ReadingSize>("md");
-	const [readingLetterSpacing, setReadingLetterSpacing] =
+	const [readingFont, setReadingFontState] = useState<ReadingFont>("Geist");
+	const [readingSize, setReadingSizeState] = useState<ReadingSize>("md");
+	const [readingLineHeight, setReadingLineHeightState] = useState<ReadingSize>("md");
+	const [readingLetterSpacing, setReadingLetterSpacingState] =
 		useState<ReadingSize>("md");
 
-	const [dyslexicReadingFont, setDyslexicReadingFont] =
+	const [dyslexicReadingFont, setDyslexicReadingFontState] =
 		useState<boolean>(false);
-	const [bionicReading, setBionicReading] = useState<boolean>(false);
-	const [rsvpReading, setRSVPReading] = useState<boolean>(false);
+	const [bionicReading, setBionicReadingState] = useState<boolean>(false);
+	const [rsvpReading, setRSVPReadingState] = useState<boolean>(false);
 
-	const [selectedVoice, setSelectedVoice] = useState<string>("default");
-	const [speechSpeed, setSpeechSpeed] = useState<SpeechSpeed>("normal");
-	const [rsvpSpeed, setRSVPSpeed] = useState<number>(300);
+	const [selectedVoice, setSelectedVoiceState] = useState<string>("default");
+	const [speechSpeed, setSpeechSpeedState] = useState<SpeechSpeed>("normal");
+	const [rsvpSpeed, setRSVPSpeedState] = useState<number>(300);
+
+	// Load settings from Dexie on mount
+	useEffect(() => {
+		const loadSettings = async () => {
+			try {
+				// Initialize default settings if none exist
+				await settingsService.initializeDefaultSettings();
+				
+				const savedSettings = await settingsService.getSettings();
+				if (savedSettings) {
+					setReadingFontState(savedSettings.readingFont as ReadingFont);
+					setReadingSizeState(savedSettings.readingSize as ReadingSize);
+					setReadingLineHeightState(savedSettings.readingLineHeight as ReadingSize);
+					setReadingLetterSpacingState(savedSettings.readingLetterSpacing as ReadingSize);
+					setDyslexicReadingFontState(savedSettings.dyslexicReadingFont);
+					setBionicReadingState(savedSettings.bionicReading);
+					setRSVPReadingState(savedSettings.rsvpReading);
+					setSelectedVoiceState(savedSettings.selectedVoice);
+					setSpeechSpeedState(savedSettings.speechSpeed as SpeechSpeed);
+					setRSVPSpeedState(savedSettings.rsvpSpeed);
+				}
+			} catch (error) {
+				console.error('Error loading settings:', error);
+			}
+		};
+
+		loadSettings();
+	}, []);
+
+	// Wrapper functions that persist changes to Dexie
+	const setReadingFont = async (font: ReadingFont) => {
+		setReadingFontState(font);
+		try {
+			await settingsService.updateSetting('readingFont', font);
+		} catch (error) {
+			console.error('Error saving reading font:', error);
+		}
+	};
+
+	const setReadingSize = async (size: ReadingSize) => {
+		setReadingSizeState(size);
+		try {
+			await settingsService.updateSetting('readingSize', size);
+		} catch (error) {
+			console.error('Error saving reading size:', error);
+		}
+	};
+
+	const setReadingLineHeight = async (size: ReadingSize) => {
+		setReadingLineHeightState(size);
+		try {
+			await settingsService.updateSetting('readingLineHeight', size);
+		} catch (error) {
+			console.error('Error saving reading line height:', error);
+		}
+	};
+
+	const setReadingLetterSpacing = async (size: ReadingSize) => {
+		setReadingLetterSpacingState(size);
+		try {
+			await settingsService.updateSetting('readingLetterSpacing', size);
+		} catch (error) {
+			console.error('Error saving reading letter spacing:', error);
+		}
+	};
+
+	const setDyslexicReadingFont = async (dyslexicFriendlyFont: boolean) => {
+		setDyslexicReadingFontState(dyslexicFriendlyFont);
+		try {
+			await settingsService.updateSetting('dyslexicReadingFont', dyslexicFriendlyFont);
+		} catch (error) {
+			console.error('Error saving dyslexic reading font:', error);
+		}
+	};
+
+	const setBionicReading = async (bionicReading: boolean) => {
+		setBionicReadingState(bionicReading);
+		try {
+			await settingsService.updateSetting('bionicReading', bionicReading);
+		} catch (error) {
+			console.error('Error saving bionic reading:', error);
+		}
+	};
+
+	const setRSVPReading = async (rsvpReading: boolean) => {
+		setRSVPReadingState(rsvpReading);
+		try {
+			await settingsService.updateSetting('rsvpReading', rsvpReading);
+		} catch (error) {
+			console.error('Error saving RSVP reading:', error);
+		}
+	};
+
+	const setSelectedVoice = async (voice: string) => {
+		setSelectedVoiceState(voice);
+		try {
+			await settingsService.updateSetting('selectedVoice', voice);
+		} catch (error) {
+			console.error('Error saving selected voice:', error);
+		}
+	};
+
+	const setSpeechSpeed = async (speed: SpeechSpeed) => {
+		setSpeechSpeedState(speed);
+		try {
+			await settingsService.updateSetting('speechSpeed', speed);
+		} catch (error) {
+			console.error('Error saving speech speed:', error);
+		}
+	};
+
+	const setRSVPSpeed = async (speed: number) => {
+		setRSVPSpeedState(speed);
+		try {
+			await settingsService.updateSetting('rsvpSpeed', speed);
+		} catch (error) {
+			console.error('Error saving RSVP speed:', error);
+		}
+	};
 
 	return (
 		<SettingsContext
