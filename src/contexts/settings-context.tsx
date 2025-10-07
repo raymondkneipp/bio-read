@@ -1,5 +1,4 @@
 // TODO: Persist settings in dexie.js
-// TODO: Reading aloud voice settings (voice and speed)
 // TODO: RSVP speed setting
 
 import { createContext, useState, use } from "react";
@@ -11,7 +10,14 @@ export const readingFonts = [
 	"Inter",
 ] as const;
 export const readingSizes = ["sm", "md", "lg", "xl"] as const;
-export const speechSpeeds = ["0.5x", "0.75x", "normal", "1.25x", "1.5x", "2x"] as const;
+export const speechSpeeds = [
+	"0.5x",
+	"0.75x",
+	"normal",
+	"1.25x",
+	"1.5x",
+	"2x",
+] as const;
 
 export type ReadingFont = (typeof readingFonts)[number];
 export type ReadingSize = (typeof readingSizes)[number];
