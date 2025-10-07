@@ -6,6 +6,9 @@ import { useSettings } from "./contexts/settings-context";
 import { RSVP } from "./components/rsvp";
 import { Footer } from "./components/footer";
 import { useReadings } from "./hooks/use-readings";
+import { PWAUpdate } from "./components/pwa-update";
+import { OfflineIndicator } from "./components/offline-indicator";
+import { InstallPrompt } from "./components/install-prompt";
 
 export function App() {
 	const [selectedReadingId, setSelectedReadingId] = useState<number | null>(null);
@@ -53,6 +56,10 @@ export function App() {
 			</main>
 
 			{!selectedReading && <Footer />}
+			
+			<PWAUpdate />
+			<OfflineIndicator />
+			<InstallPrompt />
 		</div>
 	);
 }
