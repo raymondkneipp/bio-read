@@ -67,8 +67,8 @@ export function Header(props: {
 							<BookOpenIcon className="size-4" />
 						</div>
 
-						<span className="text-lg text-muted-foreground">
-							<strong className="font-bold text-foreground">Bio</strong>Read
+						<span className="text-lg">
+							<strong className="font-bold">Bio</strong>Read
 						</span>
 					</>
 				) : (
@@ -106,7 +106,9 @@ export function Header(props: {
 								</SelectTrigger>
 								<SelectContent>
 									{readingFonts.map((font) => (
-										<SelectItem key={font} value={font}>{font}</SelectItem>
+										<SelectItem key={font} value={font}>
+											{font}
+										</SelectItem>
 									))}
 								</SelectContent>
 							</Select>
@@ -195,20 +197,18 @@ export function Header(props: {
 
 						<div className="space-y-1.5">
 							<Label htmlFor="voice-select">Voice</Label>
-							<Select
-								value={selectedVoice}
-								onValueChange={setSelectedVoice}
-							>
+							<Select value={selectedVoice} onValueChange={setSelectedVoice}>
 								<SelectTrigger className="w-full" id="voice-select">
 									<SelectValue placeholder="Select Voice" />
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="default">Default Voice</SelectItem>
-									{typeof window !== 'undefined' && window.speechSynthesis?.getVoices().map((voice) => (
-										<SelectItem key={voice.name} value={voice.name}>
-											{voice.name} ({voice.lang})
-										</SelectItem>
-									))}
+									{typeof window !== "undefined" &&
+										window.speechSynthesis?.getVoices().map((voice) => (
+											<SelectItem key={voice.name} value={voice.name}>
+												{voice.name} ({voice.lang})
+											</SelectItem>
+										))}
 								</SelectContent>
 							</Select>
 						</div>
