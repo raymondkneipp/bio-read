@@ -27,9 +27,6 @@ export default defineConfig({
 								maxEntries: 10,
 								maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
 							},
-							cacheKeyWillBeUsed: async ({ request }) => {
-								return `${request.url}?${Date.now()}`;
-							},
 						},
 					},
 					{
@@ -49,7 +46,8 @@ export default defineConfig({
 			manifest: {
 				name: "BioRead - Bionic Reading App",
 				short_name: "BioRead",
-				description: "A bionic reading app for improved focus and comprehension",
+				description:
+					"A bionic reading app for improved focus and comprehension",
 				theme_color: "#6e56cf",
 				background_color: "#f5f5ff",
 				display: "standalone",
@@ -61,14 +59,14 @@ export default defineConfig({
 						src: "pwa-192x192.png",
 						sizes: "192x192",
 						type: "image/png",
-						purpose: "maskable any"
+						purpose: "maskable any",
 					},
 					{
 						src: "pwa-512x512.png",
 						sizes: "512x512",
 						type: "image/png",
-						purpose: "maskable any"
-					}
+						purpose: "maskable any",
+					},
 				],
 			},
 		}),
