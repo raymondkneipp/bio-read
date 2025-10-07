@@ -1,75 +1,171 @@
-# React + TypeScript + Vite
+# 📚 BioRead
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, accessible reading application designed to enhance your reading experience with customizable typography, bionic reading, and offline-first functionality.
 
-Currently, two official plugins are available:
+![BioRead](https://img.shields.io/badge/React-19.1.1-blue?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue?logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-7.1.14-646CFF?logo=vite)
+![PWA](https://img.shields.io/badge/PWA-Enabled-4285F4?logo=pwa)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## React Compiler
+### 🎯 Core Reading Features
+- **Bionic Reading Mode** - Highlights the first few letters of each word to guide your eyes naturally through text
+- **RSVP Reading** - Rapid Serial Visual Presentation for speed reading
+- **Text-to-Speech** - Built-in speech synthesis with customizable voices and speeds
+- **Reading Progress Tracking** - Automatic progress tracking for each reading session
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### 🎨 Customization Options
+- **Multiple Font Families** - Montserrat, Playfair Display, Geist, Inter
+- **Dyslexic-Friendly Font** - OpenDyslexic support for better accessibility
+- **Typography Controls** - Adjustable font size, line height, and letter spacing
+- **Theme Support** - Light and dark mode with system preference detection
 
-Note: This will impact Vite dev & build performances.
+### 📱 Modern Web App
+- **Progressive Web App (PWA)** - Install on any device, works offline
+- **Responsive Design** - Optimized for desktop, tablet, and mobile
+- **Offline-First** - Full functionality without internet connection
+- **Auto-Updates** - Seamless app updates with user notification
 
-## Expanding the ESLint configuration
+### 💾 Data Management
+- **Local Storage** - All data stored locally using IndexedDB
+- **Reading Library** - Create, edit, and manage your reading collection
+- **Settings Persistence** - Your preferences are saved across sessions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended) or npm
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/bio-read.git
+   cd bio-read
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   # or
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   pnpm dev
+   # or
+   npm run dev
+   ```
+
+4. **Open your browser**
+   Navigate to `http://localhost:5173`
+
+### Building for Production
+
+```bash
+pnpm build
+# or
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The built files will be in the `dist` directory, ready for deployment.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Tech Stack
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Frontend Framework**: React 19 with TypeScript
+- **Build Tool**: Vite with Rolldown
+- **Styling**: Tailwind CSS 4
+- **UI Components**: Radix UI primitives
+- **Database**: Dexie (IndexedDB wrapper)
+- **PWA**: Vite PWA Plugin with Workbox
+- **State Management**: React Context API
+- **Icons**: Lucide React
+
+## 📖 Usage
+
+### Creating a New Reading
+1. Click the "New Reading" button in the header
+2. Enter a title and paste your text content
+3. Click "Save" to add it to your library
+
+### Customizing Your Reading Experience
+1. Open the settings panel (gear icon in header)
+2. Adjust font family, size, and spacing
+3. Toggle bionic reading or dyslexic-friendly fonts
+4. Configure text-to-speech settings
+5. Enable RSVP mode for speed reading
+
+### Managing Your Library
+- View all your readings in the main list
+- Click on any reading to open it
+- Edit or delete readings using the action buttons
+- Track your reading progress automatically
+
+## 🎛️ Settings Reference
+
+| Setting | Options | Description |
+|---------|---------|-------------|
+| Font Family | Montserrat, Playfair, Geist, Inter | Choose your preferred reading font |
+| Font Size | Small, Medium, Large, Extra Large | Adjust text size for comfort |
+| Line Height | Small, Medium, Large, Extra Large | Control vertical spacing between lines |
+| Letter Spacing | Small, Medium, Large, Extra Large | Adjust horizontal spacing between letters |
+| Dyslexic Font | On/Off | Enable OpenDyslexic for better accessibility |
+| Bionic Reading | On/Off | Highlight first letters of words |
+| RSVP Mode | On/Off | Rapid Serial Visual Presentation |
+| Speech Voice | System voices | Choose text-to-speech voice |
+| Speech Speed | 0.5x - 2x | Adjust reading speed |
+| RSVP Speed | 100-1000 WPM | Control RSVP reading speed |
+
+## 🔧 Development
+
+### Project Structure
 ```
+src/
+├── components/          # React components
+│   ├── ui/             # Reusable UI components
+│   └── ...             # Feature components
+├── contexts/           # React contexts
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+├── db.ts              # Database configuration
+└── App.tsx            # Main application component
+```
+
+### Available Scripts
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm lint` - Run ESLint
+
+### Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Radix UI](https://www.radix-ui.com/) for accessible component primitives
+- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
+- [Dexie](https://dexie.org/) for IndexedDB management
+- [OpenDyslexic](https://opendyslexic.org/) for dyslexic-friendly font
+- [Lucide](https://lucide.dev/) for beautiful icons
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+- Open an issue on GitHub
+- Check the [documentation](https://github.com/yourusername/bio-read/wiki)
+- Contact the maintainers
+
+---
+
+**Happy Reading! 📚✨**
