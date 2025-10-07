@@ -42,7 +42,7 @@ A modern, accessible reading application designed to enhance your reading experi
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/bio-read.git
+   git clone https://github.com/raymondkneipp/bio-read.git
    cd bio-read
    ```
 
